@@ -50,7 +50,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear OpMode")
+@TeleOp(name="HEYY")
 
 public class BasicOpMode_Linear extends LinearOpMode {
 
@@ -116,6 +116,9 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double drive  =  gamepad1.left_stick_y;
             double rotate = -gamepad1.right_stick_x;
 
+            int home = 5;
+            boolean Pos1 = gamepad1.dpad_left;
+            boolean Pos2 = gamepad1.dpad_right;
             boolean raise=gamepad1.a;
             float intake=gamepad1.left_trigger;
             float dispense=gamepad1.right_trigger;
@@ -134,6 +137,22 @@ public class BasicOpMode_Linear extends LinearOpMode {
             BRMotor.setPower(BRpower);
             FRMotor.setPower(FRpower);
 
+            //This is
+            if(raise){
+                Pivot.setPower(0.1);
+
+            } else{
+                Pivot.setPower(0);
+            }
+
+            if (Pos1){
+                Pivot.setTargetPosition(home);
+                Pivot.setPower(0.2);
+            }
+            if(Pos2){
+                Pivot.setTargetPosition(20);
+                Pivot.setPower(0.2);
+            }
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
