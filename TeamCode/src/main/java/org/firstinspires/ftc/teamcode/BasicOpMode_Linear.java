@@ -32,6 +32,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -86,9 +87,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        Pivot.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
         Pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Pivot.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        Pivot.setDirection(DcMotor.Direction.REVERSE);
 
         FRMotor.setDirection(DcMotor.Direction.REVERSE);
         BRMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -116,7 +118,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double drive  =  gamepad1.left_stick_y;
             double rotate = -gamepad1.right_stick_x;
 
-            int home = 5;
+            int home = 50;
             boolean Pos1 = gamepad1.dpad_left;
             boolean Pos2 = gamepad1.dpad_right;
             boolean raise=gamepad1.a;
@@ -139,22 +141,28 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             //This is
             if(raise){
-                Pivot.setPower(0.1);
-
+                Pivot.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+                Pivot.setPower(-0.75);
+                telemetry.addData("Raise Button Pressed?", true);
             } else{
+                Pivot.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 Pivot.setPower(0);
+                telemetry.addData("Raise Button Pressed?", false);
             }
 
-            if (Pos1){
+            if (Pos1) {
+                Pivot.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
                 Pivot.setTargetPosition(home);
-                Pivot.setPower(0.2);
+                Pivot.setPower(0.75);
             }
             if(Pos2){
-                Pivot.setTargetPosition(20);
-                Pivot.setPower(0.2);
+                Pivot.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+                Pivot.setTargetPosition(200);
+                Pivot.setPower(0.75);
             }
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Pivot Angle", Pivot.getCurrentPosition());
             //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
         }
