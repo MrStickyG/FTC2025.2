@@ -28,6 +28,8 @@
  */
 
 package org.firstinspires.ftc.teamcode;
+import androidx.core.math.MathUtils;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -117,7 +119,7 @@ public class TeleopOpMode extends LinearOpMode {
             double drive  =  gamepad1.left_stick_y;
             double rotate = -gamepad1.right_stick_x;
 
-            int home = 50;
+            int home = 66;
             int pos1 = 200;
             boolean goToPos1=gamepad1.b;
             boolean pivotUp = gamepad1.dpad_up;
@@ -147,8 +149,21 @@ public class TeleopOpMode extends LinearOpMode {
             } else if (goToPos1) {
                 pivotSetpoint = pos1;
             }
+
+
+            if(pivotUp){
+                pivotSetpoint += 5;
+
+            } else if (pivotDown) {
+                pivotSetpoint -= 5;
+            }
+
+            pivotSetpoint = MathUtils.clamp(pivotSetpoint, 66, 1100);
+
             double error = pivotSetpoint - Pivot.getCurrentPosition();
-            Pivot.setPower(error * kp);
+            double output = (error * kp);
+            output = MathUtils.clamp(output, -0.25, 1.0);
+            Pivot.setPower(output + 0.01);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
