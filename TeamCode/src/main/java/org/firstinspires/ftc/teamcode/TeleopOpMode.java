@@ -64,8 +64,8 @@ public class TeleopOpMode extends LinearOpMode {
     private DcMotor Intake;
     private DcMotor Extension;
     private Servo dispenser;
-
-
+    private double kp = 0.007;
+    private int pivotSetpoint = 0;
 
     @Override
     public void runOpMode() {
@@ -89,7 +89,7 @@ public class TeleopOpMode extends LinearOpMode {
 
         Pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Pivot.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        Pivot.setDirection(DcMotor.Direction.REVERSE);
+        Pivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         FRMotor.setDirection(DcMotor.Direction.REVERSE);
         BRMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -118,9 +118,11 @@ public class TeleopOpMode extends LinearOpMode {
             double rotate = -gamepad1.right_stick_x;
 
             int home = 50;
-            boolean Pos1 = gamepad1.dpad_left;
-            boolean Pos2 = gamepad1.dpad_right;
-            boolean raise=gamepad1.a;
+            int pos1 = 200;
+            boolean goToPos1=gamepad1.b;
+            boolean pivotUp = gamepad1.dpad_up;
+            boolean pivotDown = gamepad1.dpad_down;
+            boolean goToHome=gamepad1.a;
             float intake=gamepad1.left_trigger;
             float dispense=gamepad1.right_trigger;
             // Tank Mode uses one stick to control each wheel.
@@ -138,27 +140,16 @@ public class TeleopOpMode extends LinearOpMode {
             BRMotor.setPower(BRpower);
             FRMotor.setPower(FRpower);
 
-            //This is
-            if(raise){
-                Pivot.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                Pivot.setPower(-0.75);
-                telemetry.addData("Raise Button Pressed?", true);
-            } else{
-                Pivot.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                Pivot.setPower(0);
-                telemetry.addData("Raise Button Pressed?", false);
-            }
+            //This is for moving the pivot
+            if (goToHome){
+                pivotSetpoint = home;
 
-            if (Pos1) {
-                Pivot.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-                Pivot.setTargetPosition(home);
-                Pivot.setPower(0.75);
+            } else if (goToPos1) {
+                pivotSetpoint = pos1;
             }
-            if(Pos2){
-                Pivot.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-                Pivot.setTargetPosition(200);
-                Pivot.setPower(0.75);
-            }
+            double error = pivotSetpoint - Pivot.getCurrentPosition();
+            Pivot.setPower(error * kp);
+
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Pivot Angle", Pivot.getCurrentPosition());
