@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode.util.PIDController;
+
 @TeleOp(name = "Pivot Test")
 public class PivotTest extends OpMode {
     DcMotorEx pivot;
@@ -12,11 +14,14 @@ public class PivotTest extends OpMode {
     private int pivotSetpoint = 0;
 
     private double kp = 0.007;
+    private PIDController pidController;
 
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
         pivot = hardwareMap.get(DcMotorEx.class, "Pivot");
+
+        pidController = new PIDController(kp);
 
         pivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -46,8 +51,8 @@ public class PivotTest extends OpMode {
             pivotSetpoint -= 5;
         }
 
-        double error = pivotSetpoint - pivot.getCurrentPosition();
-        pivot.setPower(error * kp);
+        double output = pidController.calculate(pivot.getCurrentPosition(), pivotSetpoint);
+        pivot.setPower(output);
 
         telemetry.addData("Pivot Setpoint", pivotSetpoint);
         telemetry.addData("Encoder Position", pivot.getCurrentPosition());

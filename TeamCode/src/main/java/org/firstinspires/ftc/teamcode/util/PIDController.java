@@ -10,6 +10,10 @@ public class PIDController {
         this.kP = kP;
     }
 
+    public PIDController() {
+        this(0.0);
+    }
+
     public void setkP(double kP) {
         this.kP = kP;
     }
