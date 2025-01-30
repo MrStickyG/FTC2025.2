@@ -38,6 +38,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.util.PIDController;
+
 
 /*
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -68,6 +70,7 @@ public class TeleopOpMode extends LinearOpMode {
     private Servo dispenser;
     private double kp = 0.007;
     private int pivotSetpoint = 0;
+    PIDController pivotPID = new PIDController(2);
 
     @Override
     public void runOpMode() {
@@ -160,10 +163,12 @@ public class TeleopOpMode extends LinearOpMode {
 
             pivotSetpoint = MathUtils.clamp(pivotSetpoint, 66, 1100);
 
-            double error = pivotSetpoint - Pivot.getCurrentPosition();
-            double output = (error * kp);
+
+            double output = pivotPID.calculate(Pivot.getCurrentPosition(),pivotSetpoint)
             output = MathUtils.clamp(output, -0.25, 1.0);
             Pivot.setPower(output + 0.01);
+
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
