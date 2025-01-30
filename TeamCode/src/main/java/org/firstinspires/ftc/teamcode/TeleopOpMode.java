@@ -72,7 +72,7 @@ public class TeleopOpMode extends LinearOpMode {
     private int pivotSetpoint = 0;
     private int extensionSetpoint = 0;
     PIDController pivotPID = new PIDController(0.007);
-    PIDController extensionPID = new PIDController(0.007)
+    PIDController extensionPID = new PIDController(0.007);
 
     @Override
     public void runOpMode() {
@@ -164,7 +164,7 @@ public class TeleopOpMode extends LinearOpMode {
             } else if (pivotDown) {
                 pivotSetpoint -= 5;
             }
-            
+
             if (extensionOut){
                 extensionSetpoint += 5
 
@@ -173,7 +173,7 @@ public class TeleopOpMode extends LinearOpMode {
 
             }
             pivotSetpoint = MathUtils.clamp(pivotSetpoint, 66, 1100);
-            //extensionSetpoint = MathUtils.clamp(extensionSetpoint,)
+            //extensionSetpoint = MathUtils.clamp(extensionSetpoint,);
             double outputE = extensionPID.calculate(Extension.getCurrentPosition(),extensionSetpoint)
             Extension.setPower(outputE + 0.01);
             double output = pivotPID.calculate(Pivot.getCurrentPosition(),pivotSetpoint)
@@ -183,6 +183,7 @@ public class TeleopOpMode extends LinearOpMode {
 
 
             // Show the elapsed game time and wheel power.
+            telemetry.addData("Arm Langth", Extension.getCurrentPosition());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Pivot Angle", Pivot.getCurrentPosition());
             //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
