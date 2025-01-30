@@ -32,6 +32,7 @@ import androidx.core.math.MathUtils;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -65,14 +66,16 @@ public class TeleopOpMode extends LinearOpMode {
     private DcMotor BRMotor;
     private DcMotor BLMotor;
     private DcMotorEx Pivot;
-    private DcMotor Intake;
+    private CRServo Intake;
     private DcMotor Extension;
     private Servo dispenser;
     private double kp = 0.007;
     private int pivotSetpoint = 0;
     private int extensionSetpoint = 0;
+    private int intakeSetpoint = 0;
     PIDController pivotPID = new PIDController(0.007);
     PIDController extensionPID = new PIDController(0.007);
+    PIDController intakePID = new PIDController(0.007)
 
     @Override
     public void runOpMode() {
@@ -86,7 +89,7 @@ public class TeleopOpMode extends LinearOpMode {
         FLMotor = hardwareMap.get(DcMotor.class, "FrontLeftMotor");
         BLMotor = hardwareMap.get(DcMotor.class, "BackLeftMotor");
         BRMotor = hardwareMap.get(DcMotor.class, "BackRightMotor");
-        Intake = hardwareMap.get(DcMotor.class, "Intake");
+        Intake = hardwareMap.get(CRServo.class, "Intake");
         Pivot = hardwareMap.get(DcMotorEx.class, "Pivot");
         Extension = hardwareMap.get(DcMotor.class, "exten");
         dispenser = hardwareMap.get(Servo.class, "dispenser");
@@ -126,14 +129,15 @@ public class TeleopOpMode extends LinearOpMode {
 
             int home = 66;
             int pos1 = 200;
-            boolean extensionOut = gamepad1.right_bumper
-            boolean extensionIn = gamepad1.left_bumper
+            boolean extensionOut = gamepad1.right_bumper;
+            boolean extensionIn = gamepad1.left_bumper;
             boolean goToPos1=gamepad1.b;
             boolean pivotUp = gamepad1.dpad_up;
             boolean pivotDown = gamepad1.dpad_down;
             boolean goToHome=gamepad1.a;
+
             float intake=gamepad1.left_trigger;
-            float dispense=gamepad1.right_trigger;
+            float dispense=-gamepad1.right_trigger;
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
@@ -166,20 +170,21 @@ public class TeleopOpMode extends LinearOpMode {
             }
 
             if (extensionOut){
-                extensionSetpoint += 5
+                extensionSetpoint += 5;
 
             } else if (extensionIn){
-                extensionSetpoint -= 5
+                extensionSetpoint -= 5;
 
             }
             pivotSetpoint = MathUtils.clamp(pivotSetpoint, 66, 1100);
             //extensionSetpoint = MathUtils.clamp(extensionSetpoint,);
-            double outputE = extensionPID.calculate(Extension.getCurrentPosition(),extensionSetpoint)
+            double outputE = extensionPID.calculate(Extension.getCurrentPosition(),extensionSetpoint);
             Extension.setPower(outputE + 0.01);
-            double output = pivotPID.calculate(Pivot.getCurrentPosition(),pivotSetpoint)
+            double output = pivotPID.calculate(Pivot.getCurrentPosition(),pivotSetpoint);
             output = MathUtils.clamp(output, -0.25, 1.0);
             Pivot.setPower(output + 0.01);
-
+            Intake.setPower(intake);
+            Intake.setPower(dispense);
 
 
             // Show the elapsed game time and wheel power.
