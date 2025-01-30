@@ -70,7 +70,9 @@ public class TeleopOpMode extends LinearOpMode {
     private Servo dispenser;
     private double kp = 0.007;
     private int pivotSetpoint = 0;
-    PIDController pivotPID = new PIDController(2);
+    private int extensionSetpoint = 0;
+    PIDController pivotPID = new PIDController(0.007);
+    PIDController extensionPID = new PIDController(0.007)
 
     @Override
     public void runOpMode() {
@@ -124,6 +126,8 @@ public class TeleopOpMode extends LinearOpMode {
 
             int home = 66;
             int pos1 = 200;
+            boolean extensionOut = gamepad1.right_bumper
+            boolean extensionIn = gamepad1.left_bumper
             boolean goToPos1=gamepad1.b;
             boolean pivotUp = gamepad1.dpad_up;
             boolean pivotDown = gamepad1.dpad_down;
@@ -160,10 +164,18 @@ public class TeleopOpMode extends LinearOpMode {
             } else if (pivotDown) {
                 pivotSetpoint -= 5;
             }
+            
+            if (extensionOut){
+                extensionSetpoint += 5
 
+            } else if (extensionIn){
+                extensionSetpoint -= 5
+
+            }
             pivotSetpoint = MathUtils.clamp(pivotSetpoint, 66, 1100);
-
-
+            //extensionSetpoint = MathUtils.clamp(extensionSetpoint,)
+            double outputE = extensionPID.calculate(Extension.getCurrentPosition(),extensionSetpoint)
+            Extension.setPower(outputE + 0.01);
             double output = pivotPID.calculate(Pivot.getCurrentPosition(),pivotSetpoint)
             output = MathUtils.clamp(output, -0.25, 1.0);
             Pivot.setPower(output + 0.01);
