@@ -127,8 +127,8 @@ public class TeleopOpMode extends LinearOpMode {
             double drive  =  gamepad1.left_stick_y;
             double rotate = -gamepad1.right_stick_x;
 
-            int home = 66;
-            int pos1 = 200;
+            int home = 132;
+            int pos1 = 400;
             boolean extensionOut = gamepad1.right_bumper;
             boolean extensionIn = gamepad1.left_bumper;
             boolean goToPos1=gamepad1.b;
@@ -163,10 +163,10 @@ public class TeleopOpMode extends LinearOpMode {
 
 
             if(pivotUp){
-                pivotSetpoint += 5;
+                pivotSetpoint += 10;
 
             } else if (pivotDown) {
-                pivotSetpoint -= 5;
+                pivotSetpoint -= 10;
             }
 
             if (extensionOut){
