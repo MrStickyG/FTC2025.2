@@ -75,7 +75,7 @@ public class TeleopOpMode extends LinearOpMode {
     private int intakeSetpoint = 0;
     PIDController pivotPID = new PIDController(0.007);
     PIDController extensionPID = new PIDController(0.007);
-    PIDController intakePID = new PIDController(0.007)
+    PIDController intakePID = new PIDController(0.007);
 
     @Override
     public void runOpMode() {
