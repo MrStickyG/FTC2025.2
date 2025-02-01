@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -68,7 +69,7 @@ public class TeleopOpMode extends LinearOpMode {
     private DcMotorEx Pivot;
     private CRServo Intake;
     private DcMotor Extension;
-    private Servo dispenser;
+    private CRServo dispenser;
     private double kp = 0.007;
     private int pivotSetpoint = 0;
     private int extensionSetpoint = 0;
@@ -89,10 +90,10 @@ public class TeleopOpMode extends LinearOpMode {
         FLMotor = hardwareMap.get(DcMotor.class, "FrontLeftMotor");
         BLMotor = hardwareMap.get(DcMotor.class, "BackLeftMotor");
         BRMotor = hardwareMap.get(DcMotor.class, "BackRightMotor");
-        Intake = hardwareMap.get(CRServo.class, "Intake");
+        //Intake = hardwareMap.get(CRServo.class, "Intake");
         Pivot = hardwareMap.get(DcMotorEx.class, "Pivot");
         Extension = hardwareMap.get(DcMotor.class, "exten");
-        dispenser = hardwareMap.get(Servo.class, "dispenser");
+        dispenser = hardwareMap.get(CRServo.class, "dispenser");
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
@@ -103,6 +104,7 @@ public class TeleopOpMode extends LinearOpMode {
 
         FRMotor.setDirection(DcMotor.Direction.REVERSE);
         BRMotor.setDirection(DcMotor.Direction.FORWARD);
+        Pivot.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Wait for the game to start (driver presses START)
         waitForStart();
@@ -137,7 +139,7 @@ public class TeleopOpMode extends LinearOpMode {
             boolean goToHome=gamepad1.a;
 
             float intake=gamepad1.left_trigger;
-            float dispense=-gamepad1.right_trigger;
+            float dispense=gamepad1.right_trigger;
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
@@ -163,31 +165,43 @@ public class TeleopOpMode extends LinearOpMode {
 
 
             if(pivotUp){
-                pivotSetpoint += 10;
+                pivotSetpoint += 20;
 
             } else if (pivotDown) {
-                pivotSetpoint -= 10;
+                pivotSetpoint -= 20;
             }
 
             if (extensionOut){
-                extensionSetpoint += 5;
+                extensionSetpoint += 9;
 
             } else if (extensionIn){
-                extensionSetpoint -= 5;
+                extensionSetpoint -= 7.5;
 
             }
-            pivotSetpoint = MathUtils.clamp(pivotSetpoint, 66, 1100);
+            pivotSetpoint = MathUtils.clamp(pivotSetpoint, 144, 2200);
             //extensionSetpoint = MathUtils.clamp(extensionSetpoint,);
             double outputE = extensionPID.calculate(Extension.getCurrentPosition(),extensionSetpoint);
             Extension.setPower(outputE + 0.01);
             double output = pivotPID.calculate(Pivot.getCurrentPosition(),pivotSetpoint);
             output = MathUtils.clamp(output, -0.25, 1.0);
             Pivot.setPower(output + 0.01);
-            Intake.setPower(intake);
-            Intake.setPower(dispense);
+            if (gamepad1.left_trigger>.001){
+                dispenser.setPower(-1);
+
+            }
+            else if (gamepad1.right_trigger > 0.001){
+                dispenser.setPower(1);
+
+            }
+            else{
+                dispenser.setPower(0);
+            }
+
 
 
             // Show the elapsed game time and wheel power.
+            telemetry.addData("Left Trigger", -intake);
+            telemetry.addData("Right Trigger", dispense);
             telemetry.addData("Arm Langth", Extension.getCurrentPosition());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Pivot Angle", Pivot.getCurrentPosition());
