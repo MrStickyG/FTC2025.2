@@ -126,20 +126,20 @@ public class TeleopOpMode extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double turn = -gamepad1.left_stick_x;
-            double drive  =  gamepad1.left_stick_y;
+            double drive  =  -gamepad1.left_stick_y;
             double rotate = -gamepad1.right_stick_x;
 
             int home = 132;
             int pos1 = 400;
             boolean extensionOut = gamepad1.right_bumper;
             boolean extensionIn = gamepad1.left_bumper;
-            boolean goToPos1=gamepad1.b;
-            boolean pivotUp = gamepad1.dpad_up;
-            boolean pivotDown = gamepad1.dpad_down;
-            boolean goToHome=gamepad1.a;
+            //boolean goToPos1=gamepad1.b;
+            //boolean pivotUp = gamepad1.dpad_up;
+            //boolean pivotDown = gamepad1.dpad_down;
+            boolean goToHome=gamepad1.x;
 
-            float intake=gamepad1.left_trigger;
-            float dispense=gamepad1.right_trigger;
+            float pivotUp=gamepad1.left_trigger;
+            float pivotDown=gamepad1.right_trigger;
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
@@ -159,16 +159,17 @@ public class TeleopOpMode extends LinearOpMode {
             if (goToHome){
                 pivotSetpoint = home;
 
-            } else if (goToPos1) {
-                pivotSetpoint = pos1;
-            }
+             }
+//            else if (goToPos1) {
+//                pivotSetpoint = pos1;
+//            }
 
 
-            if(pivotUp){
-                pivotSetpoint += 20;
+            if(pivotUp > 0.01){
+                pivotSetpoint += pivotUp*20;
 
-            } else if (pivotDown) {
-                pivotSetpoint -= 20;
+            } else if (pivotDown > 0.01) {
+                pivotSetpoint -= pivotDown*20;
             }
 
             if (extensionOut){
@@ -185,11 +186,12 @@ public class TeleopOpMode extends LinearOpMode {
             double output = pivotPID.calculate(Pivot.getCurrentPosition(),pivotSetpoint);
             output = MathUtils.clamp(output, -0.25, 1.0);
             Pivot.setPower(output + 0.01);
-            if (gamepad1.left_trigger>.001){
+            if (gamepad1.b)
+            {
                 dispenser.setPower(-1);
 
             }
-            else if (gamepad1.right_trigger > 0.001){
+            else if (gamepad1.a){
                 dispenser.setPower(1);
 
             }
@@ -200,8 +202,8 @@ public class TeleopOpMode extends LinearOpMode {
 
 
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Left Trigger", -intake);
-            telemetry.addData("Right Trigger", dispense);
+            //telemetry.addData("Left Trigger", -intake);
+            //telemetry.addData("Right Trigger", dispense);
             telemetry.addData("Arm Langth", Extension.getCurrentPosition());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Pivot Angle", Pivot.getCurrentPosition());
