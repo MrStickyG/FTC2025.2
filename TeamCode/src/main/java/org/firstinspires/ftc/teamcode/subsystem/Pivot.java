@@ -16,7 +16,7 @@ public class Pivot {
     PIDController pivotPID = new PIDController(0.007);
     private int pivotSetpoint = 0;
     int home = 132;
-    boolean goToHome=gamepad1.x;
+    //boolean goToHome=gamepad1.x;
     public Pivot(HardwareMap hardwareMap){
         Pivot = hardwareMap.get(DcMotorEx.class, "Pivot");
         Pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -26,7 +26,7 @@ public class Pivot {
 
 
     }
-    public void pivot(float pivotUp, float pivotDown){
+    public void pivot(float pivotUp, float pivotDown, boolean goToHome){
         if (goToHome){
             pivotSetpoint = home;
 
