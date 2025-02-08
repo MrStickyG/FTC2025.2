@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystem.Pivot;
 
 public class TeleopOpRoadrunner extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
-    Drive drive = new Drive(hardwareMap);
+    MecanumDrive drive = new MecanumDrive();
     Extension extension = new Extension(hardwareMap);
     Pivot pivot = new Pivot(hardwareMap);
     Dispenser dispenser = new Dispenser(hardwareMap);
