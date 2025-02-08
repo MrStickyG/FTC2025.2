@@ -44,12 +44,9 @@ public class Drive {
 
     }
 
-    public void driveToPosition(double x, double y, double heading) {
-        Trajectory trajectory = TrajectoryBuilder(getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading)))
-                .build();
-
-        MecanumDrive.FollowTrajectoryAction(trajectory);
-
-    }
+//    public void driveToPosition(double x, double y, double heading) {
+//        MecanumDrive drive = new MecanumDrive(hardwareMap);
+//
+//
+//    }
 }
