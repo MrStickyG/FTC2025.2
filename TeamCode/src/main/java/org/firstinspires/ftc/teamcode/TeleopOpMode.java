@@ -125,9 +125,9 @@ public class TeleopOpMode extends LinearOpMode {
 
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
-            double turn = -gamepad1.left_stick_x;
-            double drive  =  -gamepad1.left_stick_y;
-            double rotate = -gamepad1.right_stick_x;
+            double turn = -gamepad2.left_stick_x;
+            double drive  =  -gamepad2.left_stick_y;
+            double rotate = -gamepad2.right_stick_x;
 
             int home = 132;
             int pos1 = 400;
