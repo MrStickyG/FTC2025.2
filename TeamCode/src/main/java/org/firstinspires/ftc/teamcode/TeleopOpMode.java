@@ -131,15 +131,15 @@ public class TeleopOpMode extends LinearOpMode {
 
             int home = 132;
             int pos1 = 400;
-            boolean extensionOut = gamepad1.right_bumper;
-            boolean extensionIn = gamepad1.left_bumper;
+            float extensionOut = gamepad1.right_stick_y;
+            float extensionIn = -gamepad1.left_stick_y;
             //boolean goToPos1=gamepad1.b;
             //boolean pivotUp = gamepad1.dpad_up;
             //boolean pivotDown = gamepad1.dpad_down;
             boolean goToHome=gamepad1.x;
 
-            float pivotUp=gamepad1.left_trigger;
-            float pivotDown=gamepad1.right_trigger;
+            float pivotUp=gamepad1.left_stick_y;
+            float pivotDown=-gamepad1.left_stick_y;
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
@@ -168,15 +168,15 @@ public class TeleopOpMode extends LinearOpMode {
             if(pivotUp > 0.01){
                 pivotSetpoint += pivotUp*20;
 
-            } else if (pivotDown > 0.01) {
+            } else if (pivotDown > -0.01) {
                 pivotSetpoint -= pivotDown*20;
             }
 
-            if (extensionOut){
-                extensionSetpoint += 9;
+            if (extensionOut > 0.01){
+                extensionSetpoint += extensionOut*20;
 
-            } else if (extensionIn){
-                extensionSetpoint -= 7.5;
+            } else if (extensionIn > -0.01){
+                extensionSetpoint -= extensionIn*20;
 
             }
             pivotSetpoint = MathUtils.clamp(pivotSetpoint, 144, 2200);
