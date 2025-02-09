@@ -150,10 +150,10 @@ public class TeleopOpMode extends LinearOpMode {
             BRpower = DConstant*Range.clip(-drive + turn - rotate, -1.0, 1.0) ;
 
             // Send calculated power to wheels
-            FLMotor.setPower(FLpower);
-            BLMotor.setPower(BLpower);
-            BRMotor.setPower(BRpower);
-            FRMotor.setPower(FRpower);
+            FLMotor.setPower(FLpower / 1.2);
+            BLMotor.setPower(BLpower / 1.2);
+            BRMotor.setPower(BRpower / 1.2);
+            FRMotor.setPower(FRpower / 1.2);
 
             //This is for moving the pivot
             if (goToHome){
