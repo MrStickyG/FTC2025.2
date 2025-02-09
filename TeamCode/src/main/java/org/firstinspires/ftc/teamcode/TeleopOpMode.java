@@ -132,14 +132,14 @@ public class TeleopOpMode extends LinearOpMode {
             int home = 132;
             int pos1 = 400;
             float extensionOut = gamepad1.right_stick_y;
-            float extensionIn = -gamepad1.left_stick_y;
+            float extensionIn = gamepad1.left_stick_y;
             //boolean goToPos1=gamepad1.b;
             //boolean pivotUp = gamepad1.dpad_up;
             //boolean pivotDown = gamepad1.dpad_down;
             boolean goToHome=gamepad1.x;
 
             float pivotUp=gamepad1.left_stick_y;
-            float pivotDown=-gamepad1.left_stick_y;
+            float pivotDown= gamepad1.left_stick_y;
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
