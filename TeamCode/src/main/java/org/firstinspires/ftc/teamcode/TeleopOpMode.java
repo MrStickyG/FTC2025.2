@@ -129,6 +129,7 @@ public class TeleopOpMode extends LinearOpMode {
             double drive  =  -gamepad2.left_stick_y;
             double rotate = -gamepad2.right_stick_x;
 
+            int extensionHome = 0;
             int home = 132;
             int pos1 = 400;
             float extensionOut = gamepad1.right_stick_y;
@@ -157,8 +158,10 @@ public class TeleopOpMode extends LinearOpMode {
 
             //This is for moving the pivot
             if (goToHome){
-                pivotSetpoint = home;
 
+                extensionSetpoint = extensionHome;
+                sleep(5000);
+                pivotSetpoint = home;
              }
 //            else if (goToPos1) {
 //                pivotSetpoint = pos1;
