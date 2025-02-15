@@ -77,7 +77,9 @@ public class TeleopOpMode extends LinearOpMode {
     PIDController pivotPID = new PIDController(0.007);
     PIDController extensionPID = new PIDController(0.007);
     PIDController intakePID = new PIDController(0.007);
-
+    private final ElapsedTime armHomeTimer = new ElapsedTime();
+    private boolean armHoming = false;
+    private boolean armHomingReset = true;
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -157,11 +159,26 @@ public class TeleopOpMode extends LinearOpMode {
             FRMotor.setPower(FRpower / 1.2);
 
             //This is for moving the pivot
-            if (goToHome){
-
+            if (goToHome && armHoming) {
+                armHoming = false;
+                pivotSetpoint = Pivot.getCurrentPosition();
+                extensionSetpoint = Extension.getCurrentPosition();
+            } else if (goToHome || armHoming){
+                armHoming = true;
                 extensionSetpoint = extensionHome;
-                sleep(5000);
-                pivotSetpoint = home;
+                if(Extension.getCurrentPosition() <= extensionHome + 10) {
+                    if (armHomeTimer.seconds() > 1.0) {
+                        pivotSetpoint = home;
+                    } else if (armHomingReset) {
+                        armHomeTimer.reset();
+                        armHomingReset = false;
+                    }
+
+                    if (Pivot.getCurrentPosition() <= home + 10) {
+                        armHoming = false;
+                        armHomingReset = true;
+                    }
+                }
              }
 //            else if (goToPos1) {
 //                pivotSetpoint = pos1;
