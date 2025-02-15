@@ -131,11 +131,11 @@ public class TeleopOpMode extends LinearOpMode {
             double drive  =  -gamepad2.left_stick_y;
             double rotate = -gamepad2.right_stick_x;
 
-            int extensionHome = 0;
+            int extensionHome = 650;
             int home = 132;
             int pos1 = 400;
             float extensionOut = gamepad1.right_stick_y;
-            float extensionIn = gamepad1.left_stick_y;
+            float extensionIn = gamepad1.right_stick_y;
             //boolean goToPos1=gamepad1.b;
             //boolean pivotUp = gamepad1.dpad_up;
             //boolean pivotDown = gamepad1.dpad_down;
@@ -188,15 +188,15 @@ public class TeleopOpMode extends LinearOpMode {
             if(pivotUp > 0.01){
                 pivotSetpoint += pivotUp*20;
 
-            } else if (pivotDown > -0.01) {
-                pivotSetpoint -= pivotDown*20;
+            } else if (pivotDown < -0.01) {
+                pivotSetpoint -= pivotDown*-20;
             }
 
             if (extensionOut > 0.01){
                 extensionSetpoint += extensionOut*20;
 
-            } else if (extensionIn > -0.01){
-                extensionSetpoint -= extensionIn*20;
+            } else if (extensionIn < -0.01){
+                extensionSetpoint -= extensionIn*-20;
 
             }
             pivotSetpoint = MathUtils.clamp(pivotSetpoint, 144, 2200);
