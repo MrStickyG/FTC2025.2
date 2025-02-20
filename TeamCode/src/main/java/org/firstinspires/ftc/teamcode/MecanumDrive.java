@@ -46,6 +46,7 @@ import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.messages.PoseMessage;
 import org.firstinspires.ftc.teamcode.util.GoBildaLocalizer;
+import org.firstinspires.ftc.teamcode.util.GoBildaPinpointDriver;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -109,7 +110,7 @@ public final class MecanumDrive {
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
 
     public final DcMotorEx leftFront, leftBack, rightBack, rightFront;
-
+    public final GoBildaPinpointDriver odometry;
     public final VoltageSensor voltageSensor;
 
     public final LazyImu lazyImu;
@@ -135,6 +136,7 @@ public final class MecanumDrive {
         leftBack = hardwareMap.get(DcMotorEx.class, "BackLeftMotor");
         rightBack = hardwareMap.get(DcMotorEx.class, "BackRightMotor");
         rightFront = hardwareMap.get(DcMotorEx.class, "FrontRightMotor");
+        odometry = hardwareMap.get(GoBildaPinpointDriver.class, "OdometryPods");
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
