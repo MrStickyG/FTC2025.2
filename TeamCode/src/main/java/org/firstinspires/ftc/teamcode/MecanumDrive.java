@@ -136,7 +136,7 @@ public final class MecanumDrive {
         leftBack = hardwareMap.get(DcMotorEx.class, "BackLeftMotor");
         rightBack = hardwareMap.get(DcMotorEx.class, "BackRightMotor");
         rightFront = hardwareMap.get(DcMotorEx.class, "FrontRightMotor");
-        odometry = hardwareMap.get(GoBildaPinpointDriver.class, "OdometryPods");
+        odometry = hardwareMap.get(GoBildaPinpointDriver.class, "odometry");
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
