@@ -4,8 +4,12 @@ package org.firstinspires.ftc.teamcode;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystem.Dispenser;
@@ -17,7 +21,8 @@ import org.firstinspires.ftc.teamcode.subsystem.Pivot;
 
 public class TeleopOpRoadrunner extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
-    MecanumDrive drive = new MecanumDrive();
+    Pose2d startPose = new Pose2d(0,0, 0);
+    MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
     Extension extension = new Extension(hardwareMap);
     Pivot pivot = new Pivot(hardwareMap);
     Dispenser dispenser = new Dispenser(hardwareMap);

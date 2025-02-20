@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -120,7 +121,7 @@ public final class MecanumDrive {
     private final DownsampledWriter targetPoseWriter = new DownsampledWriter("TARGET_POSE", 50_000_000);
     private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_COMMAND", 50_000_000);
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
-
+    double DConstant = 1;
     public MecanumDrive(HardwareMap hardwareMap, Pose2d pose) {
         LynxFirmware.throwIfModulesAreOutdated(hardwareMap);
 
@@ -156,6 +157,19 @@ public final class MecanumDrive {
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
 
+    public void drive(double turn, double drive, double rotate) {
+        double BLpower = DConstant * Range.clip(-drive - turn + rotate, -1.0, 1.0);
+        double FLpower = DConstant * Range.clip(drive - turn - rotate, -1.0, 1.0);
+        double FRpower = DConstant * Range.clip(drive + turn + rotate, -1.0, 1.0);
+        double BRpower = DConstant * Range.clip(-drive + turn - rotate, -1.0, 1.0);
+
+        // Send calculated power to wheels
+        leftFront.setPower(FLpower);
+        leftBack.setPower(BLpower);
+        rightBack.setPower(BRpower);
+        rightFront.setPower(FRpower);
+
+    }
     public void setDrivePowers(PoseVelocity2d powers) {
         MecanumKinematics.WheelVelocities<Time> wheelVels = new MecanumKinematics(1).inverse(
                 PoseVelocity2dDual.constant(powers, 1));
