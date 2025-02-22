@@ -128,27 +128,40 @@ public class TeleopOpMode extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double rotateSpeed = 0.8;
+            float pivotSpeed = 0.8f;
+            float extensionSpeed = 0.8f;
             double turn = -gamepad2.left_stick_x;
             double drive  =  -gamepad2.left_stick_y;
             double rotate = -gamepad2.right_stick_x * rotateSpeed;
             double speedForDrive = 0.8;
+            boolean tubomodeForPlayer2 = gamepad2.y;
+            boolean tubomodeForPlayer1 = gamepad1.y;
 
             int extensionHome = 650;
             int home = 132;
             int pos1 = 400;
-            float extensionOut = gamepad1.right_stick_y;
-            float extensionIn = gamepad1.right_stick_y;
+            float extensionOut = gamepad1.right_stick_y * extensionSpeed;
+            float extensionIn = gamepad1.right_stick_y * extensionSpeed;
             //boolean goToPos1=gamepad1.b;
             //boolean pivotUp = gamepad1.dpad_up;
             //boolean pivotDown = gamepad1.dpad_down;
             boolean goToHome=gamepad1.x;
+            boolean isGamepad1LeftStickPressed = gamepad1.left_stick_button;
+            boolean isGamepad1RightStickPressed = gamepad1.right_stick_button;
 
-            float pivotUp=-gamepad1.left_stick_y;
-            float pivotDown= -gamepad1.left_stick_y;
+            float pivotUp=-gamepad1.left_stick_y * pivotSpeed;
+            float pivotDown= -gamepad1.left_stick_y * pivotSpeed;
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
             // rightPower = -gamepad1.right_stick_y ;
+            if (tubomodeForPlayer1) {
+                speedForDrive = 1.0;
+                rotateSpeed = 1.0;
+            }else {
+                speedForDrive = 0.8;
+                rotateSpeed = 0.8;
+            }
             BLpower = DConstant*Range.clip(-drive - turn +rotate, -1.0, 1.0) ;
             FLpower = DConstant*Range.clip(drive - turn - rotate, -1.0, 1.0) ;
             FRpower = DConstant*Range.clip(drive + turn + rotate, -1.0, 1.0) ;
@@ -185,15 +198,29 @@ public class TeleopOpMode extends LinearOpMode {
 //            else if (goToPos1) {
 //                pivotSetpoint = pos1;
 //            }
+            if (tubomodeForPlayer2) {
+                pivotSpeed = 1.0f;
+                extensionSpeed = 1.0f;
+            } else {
 
+                if (isGamepad1LeftStickPressed) {
+                    pivotSpeed = 1.0f;
+                } else {
+                    pivotSpeed = 0.8f;
+                }
 
-            if(pivotUp > 0.01){
-                pivotSetpoint += pivotUp*20;
+                if (isGamepad1RightStickPressed) {
+                    extensionSpeed = 1.0f;
+                } else {
+                    extensionSpeed = 0.8f;
+                }
+            }
+            if (pivotUp > 0.01) {
+                pivotSetpoint += pivotUp * 20;
 
             } else if (pivotDown < -0.01) {
-                pivotSetpoint -= pivotDown*-20;
+                pivotSetpoint -= pivotDown * -20;
             }
-
             if (extensionOut > 0.01){
                 extensionSetpoint += extensionOut*20;
 
@@ -201,6 +228,7 @@ public class TeleopOpMode extends LinearOpMode {
                 extensionSetpoint -= extensionIn*-20;
 
             }
+
             pivotSetpoint = MathUtils.clamp(pivotSetpoint, 144, 2330);
             //extensionSetpoint = MathUtils.clamp(extensionSetpoint,);
             double outputE = extensionPID.calculate(Extension.getCurrentPosition(),extensionSetpoint);
@@ -226,6 +254,8 @@ public class TeleopOpMode extends LinearOpMode {
             // Show the elapsed game time and wheel power.
             //telemetry.addData("Left Trigger", -intake);
             //telemetry.addData("Right Trigger", dispense);
+            telemetry.addData("Turbo mode for player 1", tubomodeForPlayer1);
+            telemetry.addData("Turbo mode for player 2", tubomodeForPlayer2);
             telemetry.addData("Arm Langth", Extension.getCurrentPosition());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Pivot Angle", Pivot.getCurrentPosition());
