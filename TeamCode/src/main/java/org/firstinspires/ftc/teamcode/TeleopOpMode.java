@@ -155,7 +155,7 @@ public class TeleopOpMode extends LinearOpMode {
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
             // rightPower = -gamepad1.right_stick_y ;
-            if (tubomodeForPlayer1) {
+            if (tubomodeForPlayer2) {
                 speedForDrive = 1.0;
                 rotateSpeed = 1.0;
             }else {
@@ -198,7 +198,7 @@ public class TeleopOpMode extends LinearOpMode {
 //            else if (goToPos1) {
 //                pivotSetpoint = pos1;
 //            }
-            if (tubomodeForPlayer2) {
+            if (tubomodeForPlayer1) {
                 pivotSpeed = 1.0f;
                 extensionSpeed = 1.0f;
             } else {
