@@ -127,9 +127,11 @@ public class TeleopOpMode extends LinearOpMode {
 
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
+            double rotateSpeed = 0.8;
             double turn = -gamepad2.left_stick_x;
             double drive  =  -gamepad2.left_stick_y;
-            double rotate = -gamepad2.right_stick_x;
+            double rotate = -gamepad2.right_stick_x * rotateSpeed;
+            double speedForDrive = 0.8;
 
             int extensionHome = 650;
             int home = 132;
@@ -153,10 +155,10 @@ public class TeleopOpMode extends LinearOpMode {
             BRpower = DConstant*Range.clip(-drive + turn - rotate, -1.0, 1.0) ;
 
             // Send calculated power to wheels
-            FLMotor.setPower(FLpower / 1.2);
-            BLMotor.setPower(BLpower / 1.2);
-            BRMotor.setPower(BRpower / 1.2);
-            FRMotor.setPower(FRpower / 1.2);
+            FLMotor.setPower(FLpower * speedForDrive);
+            BLMotor.setPower(BLpower * speedForDrive);
+            BRMotor.setPower(BRpower * speedForDrive);
+            FRMotor.setPower(FRpower * speedForDrive);
 
             //This is for moving the pivot
             if (goToHome && armHoming) {
@@ -199,7 +201,7 @@ public class TeleopOpMode extends LinearOpMode {
                 extensionSetpoint -= extensionIn*-20;
 
             }
-            pivotSetpoint = MathUtils.clamp(pivotSetpoint, 144, 2200);
+            pivotSetpoint = MathUtils.clamp(pivotSetpoint, 144, 2330);
             //extensionSetpoint = MathUtils.clamp(extensionSetpoint,);
             double outputE = extensionPID.calculate(Extension.getCurrentPosition(),extensionSetpoint);
             Extension.setPower(outputE + 0.01);
