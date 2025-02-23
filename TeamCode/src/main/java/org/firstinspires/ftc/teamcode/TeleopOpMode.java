@@ -236,12 +236,12 @@ public class TeleopOpMode extends LinearOpMode {
             double output = pivotPID.calculate(Pivot.getCurrentPosition(),pivotSetpoint);
             output = MathUtils.clamp(output, -0.25, 1.0);
             Pivot.setPower(output + 0.01);
-            if (gamepad1.b)
+            if (gamepad1.left_bumper)
             {
                 dispenser.setPower(-1);
 
             }
-            else if (gamepad1.a){
+            else if (gamepad1.right_bumper){
                 dispenser.setPower(1);
 
             }
