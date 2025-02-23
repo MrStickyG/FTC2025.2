@@ -80,6 +80,7 @@ public class TeleopOpMode extends LinearOpMode {
     private final ElapsedTime armHomeTimer = new ElapsedTime();
     private boolean armHoming = false;
     private boolean armHomingReset = true;
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -136,6 +137,11 @@ public class TeleopOpMode extends LinearOpMode {
             double speedForDrive = 0.8;
             boolean tubomodeForPlayer2 = gamepad2.y;
             boolean tubomodeForPlayer1 = gamepad1.y;
+            boolean tubomodeForPlayer1_On = false;
+            boolean tubomodeForPlayer2_On = false;
+            int dispenserIsIntakingToggle = 0;
+            boolean dispenserIsIntaking = false;
+            boolean isGamepad2LeftStickPressed = gamepad2.left_stick_button;
 
             int extensionHome = 650;
             int home = 132;
@@ -159,8 +165,14 @@ public class TeleopOpMode extends LinearOpMode {
                 speedForDrive = 1.0;
                 rotateSpeed = 1.0;
             }else {
-                speedForDrive = 0.8;
-                rotateSpeed = 0.8;
+                if (isGamepad2LeftStickPressed) {
+                    speedForDrive = 1.0;
+                    rotateSpeed = 1.0;
+                } else {
+                    speedForDrive = 0.8;
+                    rotateSpeed = 0.8;
+                }
+
             }
             BLpower = DConstant*Range.clip(-drive - turn +rotate, -1.0, 1.0) ;
             FLpower = DConstant*Range.clip(drive - turn - rotate, -1.0, 1.0) ;
@@ -198,11 +210,12 @@ public class TeleopOpMode extends LinearOpMode {
 //            else if (goToPos1) {
 //                pivotSetpoint = pos1;
 //            }
-            if (tubomodeForPlayer1) {
+            if (tubomodeForPlayer1 || tubomodeForPlayer1_On) {
+                tubomodeForPlayer1_On = true;
                 pivotSpeed = 1.0f;
                 extensionSpeed = 1.0f;
             } else {
-
+                tubomodeForPlayer1_On = false;
                 if (isGamepad1LeftStickPressed) {
                     pivotSpeed = 1.0f;
                 } else {
@@ -236,9 +249,17 @@ public class TeleopOpMode extends LinearOpMode {
             double output = pivotPID.calculate(Pivot.getCurrentPosition(),pivotSetpoint);
             output = MathUtils.clamp(output, -0.25, 1.0);
             Pivot.setPower(output + 0.01);
-            if (gamepad1.left_bumper)
-            {
-                dispenser.setPower(-1);
+            if (gamepad1.left_bumper) {
+                if (dispenserIsIntakingToggle == 1) {
+                    dispenserIsIntaking = true;
+                    dispenser.setPower(-1);
+                    dispenserIsIntakingToggle = 0;
+                }else if (dispenserIsIntakingToggle == 0) {
+                    dispenserIsIntaking = false;
+                    dispenser.setPower(0);
+                    dispenserIsIntakingToggle = 1;
+                }
+                dispenserIsIntaking = false;
 
             }
             else if (gamepad1.right_bumper){
