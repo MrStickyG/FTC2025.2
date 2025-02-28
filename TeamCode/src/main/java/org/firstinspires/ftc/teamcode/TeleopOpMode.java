@@ -67,7 +67,7 @@ public class TeleopOpMode extends LinearOpMode {
     private DcMotor BRMotor;
     private DcMotor BLMotor;
     private DcMotorEx Pivot;
-    private CRServo Intake;
+    //private CRServo Intake;
     private DcMotor Extension;
     private CRServo dispenser;
     private double kp = 0.007;
