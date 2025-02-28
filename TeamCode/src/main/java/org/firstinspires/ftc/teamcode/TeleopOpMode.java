@@ -142,6 +142,8 @@ public class TeleopOpMode extends LinearOpMode {
             int dispenserIsIntakingToggle = 0;
             boolean dispenserIsIntaking = false;
             boolean isGamepad2LeftStickPressed = gamepad2.left_stick_button;
+            float G2RT = gamepad2.right_trigger;
+            float G2LT = gamepad2.left_trigger;
 
             int extensionHome = 650;
             int home = 132;
@@ -174,6 +176,12 @@ public class TeleopOpMode extends LinearOpMode {
                 }
 
             }
+            if (G2RT > 0.01){
+                rotate += G2RT*0.5;
+
+            }else if (G2LT > 0.01){
+                rotate -= G2LT*0.5;
+            }
             BLpower = DConstant*Range.clip(-drive - turn +rotate, -1.0, 1.0) ;
             FLpower = DConstant*Range.clip(drive - turn - rotate, -1.0, 1.0) ;
             FRpower = DConstant*Range.clip(drive + turn + rotate, -1.0, 1.0) ;
@@ -184,6 +192,8 @@ public class TeleopOpMode extends LinearOpMode {
             BLMotor.setPower(BLpower * speedForDrive);
             BRMotor.setPower(BRpower * speedForDrive);
             FRMotor.setPower(FRpower * speedForDrive);
+
+
 
             //This is for moving the pivot
             if (goToHome && armHoming) {
@@ -249,18 +259,21 @@ public class TeleopOpMode extends LinearOpMode {
             double output = pivotPID.calculate(Pivot.getCurrentPosition(),pivotSetpoint);
             output = MathUtils.clamp(output, -0.25, 1.0);
             Pivot.setPower(output + 0.01);
+//            if (gamepad1.left_bumper) {
+//                if (dispenserIsIntakingToggle == 1) {
+//                    dispenserIsIntaking = true;
+//                    dispenser.setPower(-1);
+//                    dispenserIsIntakingToggle = 0;
+//                }else if (dispenserIsIntakingToggle == 0) {
+//                    dispenserIsIntaking = false;
+//                    dispenser.setPower(0);
+//                    dispenserIsIntakingToggle = 1;
+//                }
+//                dispenserIsIntaking = false;
+//
+//            }
             if (gamepad1.left_bumper) {
-                if (dispenserIsIntakingToggle == 1) {
-                    dispenserIsIntaking = true;
-                    dispenser.setPower(-1);
-                    dispenserIsIntakingToggle = 0;
-                }else if (dispenserIsIntakingToggle == 0) {
-                    dispenserIsIntaking = false;
-                    dispenser.setPower(0);
-                    dispenserIsIntakingToggle = 1;
-                }
-                dispenserIsIntaking = false;
-
+                dispenser.setPower(-1);
             }
             else if (gamepad1.right_bumper){
                 dispenser.setPower(1);
